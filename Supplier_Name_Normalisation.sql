@@ -86,8 +86,10 @@ df1 = df[["tag_id","SUPPLIER_NAME"]]
 
 # drop SUPPLIER_NAME column , we have tag_ids now
 df = df[["tag_id","Clean"]]
+
 # group df with tag_id with selecting minimum 
-group = df.groupby("tag_id").min().reset_index()
+#group = df.groupby("tag_id")["Clean"].max().reset_index()
+group = df.loc[df["Clean"].str.len().groupby(df["tag_id"]).idxmax()]
 
 # join both the data frames group(unique) and main data
 df_merge = pd.merge(df1,group, on=["tag_id"])
@@ -96,6 +98,12 @@ df_merge = pd.merge(df1,group, on=["tag_id"])
 df_merge = df_merge[["tag_id","SUPPLIER_NAME","Clean"]]
 OutputDataSet = df_merge   
 ',
-@input_data_1 = N'select  distinct SUPPLIER_NAME from DB_Suppliers..Indonesia_Imp2020',
+@input_data_1 = N'select  distinct SUPPLIER_NAME from DB_Suppliers..Indonesia_Imp2019',
 @input_data_1_name = N'supp'
 with result sets (([tag_id] int,SUPPLIER_NAME nvarchar(MAX),[CLEANED_SUPPLIER_NAME] nvarchar(MAX)))
+
+
+
+--select @@SERVERNAME
+
+--select  top 5  * from DB_Suppliers..Indonesia_Imp2019
